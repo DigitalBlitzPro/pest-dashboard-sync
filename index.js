@@ -49,7 +49,6 @@ async function syncGHLLeads() {
 
     const contacts = response.data.contacts || [];
     console.log('Fetched ' + contacts.length + ' contacts from GHL');
-    console.log('First contact sample:', JSON.stringify(contacts[0], null, 2));
 
     for (const contact of contacts) {
   let leadType = 'form';
@@ -112,17 +111,3 @@ async function syncGHLLeads() {
 syncGHLLeads();
 
 cron.schedule('0 6 * * *', syncGHLLeads);
-async function debugContact() {
-  const response = await axios.get(
-    'https://services.leadconnectorhq.com/contacts/o0FnsGkarOBycxHb8SIm',
-    {
-      headers: {
-        Authorization: 'Bearer ' + GHL_API_KEY,
-        Version: '2021-07-28'
-      }
-    }
-  );
-  console.log('Debug contact:', JSON.stringify(response.data.contact, null, 2));
-}
-
-debugContact();
