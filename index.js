@@ -97,3 +97,17 @@ async function syncGHLLeads() {
 syncGHLLeads();
 
 cron.schedule('0 6 * * *', syncGHLLeads);
+async function debugContact() {
+  const response = await axios.get(
+    'https://services.leadconnectorhq.com/contacts/e84S199Xl7amZEUAFa8W',
+    {
+      headers: {
+        Authorization: 'Bearer ' + GHL_API_KEY,
+        Version: '2021-07-28'
+      }
+    }
+  );
+  console.log('Debug contact:', JSON.stringify(response.data.contact, null, 2));
+}
+
+debugContact();
