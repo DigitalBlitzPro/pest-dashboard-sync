@@ -1,0 +1,14 @@
+{
+  "name": "pest-dashboard-sync",
+  "version": "1.0.0",
+  "description": "GHL + Google Ads data sync for pest dashboard",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.39.0",
+    "axios": "^1.6.0",
+    "node-cron": "^3.0.3"
+  }
+}
