@@ -52,7 +52,22 @@ async function syncGHLLeads() {
     console.log('First contact sample:', JSON.stringify(contacts[0], null, 2));
 
     for (const contact of contacts) {
-      const leadType = (contact.createdBy && contact.createdBy.source === 'lc-phone-api') ? 'call' : 'form';
+  let leadType = 'form';
+  try {
+    const contactDetail = await axios.get(
+      'https://services.leadconnectorhq.com/contacts/' + contact.id,
+      {
+        headers: {
+          Authorization: 'Bearer ' + GHL_API_KEY,
+          Version: '2021-07-28'
+        }
+      }
+    );
+    const createdBy = contactDetail.data.contact?.createdBy;
+    leadType = (createdBy && createdBy.source === 'lc-phone-api') ? 'call' : 'form';
+  } catch (e) {
+    console.error('Could not fetch detail for contact:', contact.id);
+  }
       const source = contact.source || 'organic';
       const stage = STAGE_MAP[contact.pipelineStage] || 'new_lead';
 
