@@ -135,8 +135,8 @@ async function syncPipelineStages() {
 
     for (const opp of opportunities) {
       const stage = STAGE_MAP[opp.status] || STAGE_MAP[opp.pipelineStage?.name] || 'new_lead';
-      console.log('Opp stage raw:', opp.status, opp.pipelineStage?.name, '→', stage);
-
+      console.log('Opp stage raw:', JSON.stringify(opp, null, 2));
+      
       await supabase
         .from('leads')
         .update({
