@@ -52,7 +52,7 @@ async function syncGHLLeads() {
     console.log('First contact sample:', JSON.stringify(contacts[0], null, 2));
 
     for (const contact of contacts) {
-      const leadType = contact.type === 'phone' ? 'call' : 'form';
+      const leadType = (contact.createdBy && contact.createdBy.source === 'lc-phone-api') ? 'call' : 'form';
       const source = contact.source || 'organic';
       const stage = STAGE_MAP[contact.pipelineStage] || 'new_lead';
 
