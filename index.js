@@ -49,6 +49,7 @@ async function syncGHLLeads() {
 
     const contacts = response.data.contacts || [];
     console.log('Fetched ' + contacts.length + ' contacts from GHL');
+    console.log('First contact sample:', JSON.stringify(contacts[0], null, 2));
 
     for (const contact of contacts) {
       const leadType = contact.type === 'phone' ? 'call' : 'form';
