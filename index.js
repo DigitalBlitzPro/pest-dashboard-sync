@@ -107,7 +107,53 @@ async function syncGHLLeads() {
     });
   }
 }
+async function syncPipelineStages() {
+  console.log('Syncing pipeline stages...');
+  try {
+    const { data: account } = await supabase
+      .from('accounts')
+      .select('id')
+      .eq('ghl_location_id', GHL_LOCATION_ID)
+      .single();
 
-syncGHLLeads();
+    const response = await axios.get(
+      'https://services.leadconnectorhq.com/opportunities/search',
+      {
+        headers: {
+          Authorization: 'Bearer ' + GHL_API_KEY,
+          Version: '2021-07-28'
+        },
+        params: {
+          location_id: GHL_LOCATION_ID,
+          limit: 100
+        }
+      }
+    );
 
-cron.schedule('0 6 * * *', syncGHLLeads);
+    const opportunities = response.data.opportunities || [];
+    console.log('Fetched ' + opportunities.length + ' opportunities from GHL');
+
+    for (const opp of opportunities) {
+      const stage = STAGE_MAP[opp.status] || STAGE_MAP[opp.pipelineStage?.name] || 'new_lead';
+      console.log('Opp stage raw:', opp.status, opp.pipelineStage?.name, '→', stage);
+
+      await supabase
+        .from('leads')
+        .update({
+          pipeline_stage: stage,
+          is_qualified: ['qualified', 'won', 'current_customer'].includes(stage),
+          is_closed: stage === 'won',
+          ghl_opportunity_id: opp.id
+        })
+        .eq('account_id', account.id)
+        .eq('ghl_contact_id', opp.contactId);
+    }
+
+    console.log('Pipeline stage sync complete.');
+  } catch (err) {
+    console.error('Pipeline sync error:', err.message);
+  }
+}
+syncGHLLeads().then(() => syncPipelineStages());
+
+cron.schedule('0 6 * * *', () => syncGHLLeads().then(() => syncPipelineStages()));
