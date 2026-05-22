@@ -116,6 +116,31 @@ async function syncPipelineStages() {
       .eq('ghl_location_id', GHL_LOCATION_ID)
       .single();
 
+    // First fetch the pipeline to get stage ID → name mapping
+    const pipelineResponse = await axios.get(
+      'https://services.leadconnectorhq.com/opportunities/pipelines',
+      {
+        headers: {
+          Authorization: 'Bearer ' + GHL_API_KEY,
+          Version: '2021-07-28'
+        },
+        params: {
+          locationId: GHL_LOCATION_ID
+        }
+      }
+    );
+
+    // Build stageId → our stage key map
+    const stageIdMap = {};
+    const pipelines = pipelineResponse.data.pipelines || [];
+    for (const pipeline of pipelines) {
+      for (const stage of (pipeline.stages || [])) {
+        console.log('Pipeline stage found:', stage.id, '→', stage.name);
+        stageIdMap[stage.id] = STAGE_MAP[stage.name] || 'new_lead';
+      }
+    }
+
+    // Now fetch opportunities
     const response = await axios.get(
       'https://services.leadconnectorhq.com/opportunities/search',
       {
@@ -134,9 +159,15 @@ async function syncPipelineStages() {
     console.log('Fetched ' + opportunities.length + ' opportunities from GHL');
 
     for (const opp of opportunities) {
-      const stage = STAGE_MAP[opp.status] || STAGE_MAP[opp.pipelineStage?.name] || 'new_lead';
-      console.log('Opp stage raw:', JSON.stringify(opp, null, 2));
-      
+      let stage;
+      if (opp.status === 'won') {
+        stage = 'won';
+      } else if (opp.status === 'lost') {
+        stage = 'unqualified';
+      } else {
+        stage = stageIdMap[opp.pipelineStageId] || 'new_lead';
+      }
+
       await supabase
         .from('leads')
         .update({
