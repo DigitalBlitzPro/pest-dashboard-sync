@@ -33,40 +33,51 @@ async function syncGHLLeads() {
       return;
     }
 
-    const response = await axios.get(
-      'https://services.leadconnectorhq.com/contacts/',
-      {
-        headers: {
-          Authorization: 'Bearer ' + GHL_API_KEY,
-          Version: '2021-07-28'
-        },
-        params: {
-          locationId: GHL_LOCATION_ID,
-          limit: 100
-        }
-      }
-    );
+    let allContacts = [];
+    let startAfter = null;
+    let startAfterId = null;
+    let page = 1;
 
-    const contacts = response.data.contacts || [];
-    console.log('Fetched ' + contacts.length + ' contacts from GHL');
+    while (true) {
+      const params = { locationId: GHL_LOCATION_ID, limit: 100 };
+      if (startAfter) params.startAfter = startAfter;
+      if (startAfterId) params.startAfterId = startAfterId;
 
-    for (const contact of contacts) {
-  let leadType = 'form';
-  try {
-    const contactDetail = await axios.get(
-      'https://services.leadconnectorhq.com/contacts/' + contact.id,
-      {
-        headers: {
-          Authorization: 'Bearer ' + GHL_API_KEY,
-          Version: '2021-07-28'
+      const response = await axios.get(
+        'https://services.leadconnectorhq.com/contacts/',
+        {
+          headers: { Authorization: 'Bearer ' + GHL_API_KEY, Version: '2021-07-28' },
+          params
         }
+      );
+
+      const contacts = response.data.contacts || [];
+      console.log('Page ' + page + ': fetched ' + contacts.length + ' contacts');
+      allContacts = allContacts.concat(contacts);
+
+      if (contacts.length < 100) break;
+
+      const last = contacts[contacts.length - 1];
+      startAfter = new Date(last.dateAdded).getTime().toString();
+      startAfterId = last.id;
+      page++;
+    }
+
+    console.log('Total contacts fetched: ' + allContacts.length);
+
+    for (const contact of allContacts) {
+      let leadType = 'form';
+      try {
+        const contactDetail = await axios.get(
+          'https://services.leadconnectorhq.com/contacts/' + contact.id,
+          { headers: { Authorization: 'Bearer ' + GHL_API_KEY, Version: '2021-07-28' } }
+        );
+        const createdBy = contactDetail.data.contact?.createdBy;
+        leadType = (createdBy && createdBy.source === 'lc-phone-api') ? 'call' : 'form';
+      } catch (e) {
+        console.error('Could not fetch detail for contact:', contact.id);
       }
-    );
-    const createdBy = contactDetail.data.contact?.createdBy;
-    leadType = (createdBy && createdBy.source === 'lc-phone-api') ? 'call' : 'form';
-  } catch (e) {
-    console.error('Could not fetch detail for contact:', contact.id);
-  }
+
       const source = contact.source || 'organic';
       const stage = STAGE_MAP[contact.pipelineStage] || 'new_lead';
 
@@ -77,7 +88,7 @@ async function syncGHLLeads() {
           ? new Date(contact.dateAdded).toISOString().split('T')[0]
           : new Date().toISOString().split('T')[0],
         lead_type: leadType,
-        source: source,
+        source,
         pipeline_stage: stage,
         is_qualified: ['qualified', 'won', 'current_customer'].includes(stage),
         is_closed: stage === 'won',
@@ -93,7 +104,7 @@ async function syncGHLLeads() {
       account_id: account.id,
       sync_type: 'ghl_leads',
       status: 'success',
-      message: 'Synced ' + contacts.length + ' contacts'
+      message: 'Synced ' + allContacts.length + ' contacts'
     });
 
     console.log('GHL sync complete.');
