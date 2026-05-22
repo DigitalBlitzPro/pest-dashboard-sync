@@ -77,4 +77,4 @@ async function syncGHLLeads() {
 
     await supabase.from('sync_log').insert({
       account_id: account.id,
-      sync_type: 'ghl_lead
+      sync_type: 'ghl_leads',
