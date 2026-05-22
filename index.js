@@ -21,7 +21,6 @@ const STAGE_MAP = {
 
 async function syncGHLLeads() {
   console.log('Starting GHL sync for Atlas...');
-
   try {
     const { data: account } = await supabase
       .from('accounts')
@@ -35,10 +34,10 @@ async function syncGHLLeads() {
     }
 
     const response = await axios.get(
-      `https://services.leadconnectorhq.com/contacts/`,
+      'https://services.leadconnectorhq.com/contacts/',
       {
         headers: {
-          Authorization: `Bearer ${GHL_API_KEY}`,
+          Authorization: 'Bearer ' + GHL_API_KEY,
           Version: '2021-07-28'
         },
         params: {
@@ -49,7 +48,7 @@ async function syncGHLLeads() {
     );
 
     const contacts = response.data.contacts || [];
-    console.log(`Fetched ${contacts.length} contacts from GHL`);
+    console.log('Fetched ' + contacts.length + ' contacts from GHL');
 
     for (const contact of contacts) {
       const leadType = contact.type === 'phone' ? 'call' : 'form';
@@ -78,3 +77,22 @@ async function syncGHLLeads() {
     await supabase.from('sync_log').insert({
       account_id: account.id,
       sync_type: 'ghl_leads',
+      status: 'success',
+      message: 'Synced ' + contacts.length + ' contacts'
+    });
+
+    console.log('GHL sync complete.');
+
+  } catch (err) {
+    console.error('GHL sync error:', err.message);
+    await supabase.from('sync_log').insert({
+      sync_type: 'ghl_leads',
+      status: 'error',
+      message: err.message
+    });
+  }
+}
+
+syncGHLLeads();
+
+cron.schedule('0 6 * * *', syncGHLLeads);
