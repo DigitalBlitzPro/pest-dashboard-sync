@@ -1,0 +1,31 @@
+{
+  "slug": "tander",
+  "name": "Tander",
+  "website": "https://REPLACE-ME.example",
+  "cms": "REPLACE-ME (wordpress | webflow | custom-repo)",
+  "slackChannel": "REPLACE-ME",
+  "serviceAreas": ["REPLACE-ME"],
+  "nap": {
+    "businessName": "REPLACE-ME",
+    "address": "REPLACE-ME",
+    "phone": "REPLACE-ME"
+  },
+  "competitors": ["REPLACE-ME.example"],
+  "trackedKeywords": {
+    "google": ["REPLACE-ME"],
+    "bing": ["REPLACE-ME"],
+    "mapPack": ["REPLACE-ME"]
+  },
+  "aiPrompts": ["REPLACE-ME: e.g. best pest control company in <city>"],
+  "dataSources": {
+    "searchConsoleProperty": "REPLACE-ME",
+    "ga4PropertyId": "REPLACE-ME",
+    "bingWebmasterSite": "REPLACE-ME",
+    "semrushProjectId": "REPLACE-ME",
+    "gbpLocationId": "REPLACE-ME"
+  },
+  "brandVoice": "REPLACE-ME",
+  "neverDo": [
+    "REPLACE-ME: claims we cannot back up, fake reviews, paid links"
+  ]
+}

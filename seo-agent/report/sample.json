@@ -1,0 +1,167 @@
+{
+  "clientName": "Tander",
+  "periodLabel": "November 2026",
+  "summary": {
+    "improved": 4,
+    "declined": 0,
+    "top3": 2,
+    "aiMentions": 1,
+    "aiTotal": 2,
+    "workItems": 7
+  },
+  "rankings": [
+    {
+      "channel": "google",
+      "title": "Google Search",
+      "rows": [
+        {
+          "label": "pest control near me",
+          "before": 11,
+          "after": 8,
+          "change": 3
+        },
+        {
+          "label": "termite inspection",
+          "before": 7,
+          "after": 3,
+          "change": 4
+        },
+        {
+          "label": "ant exterminator",
+          "before": 4,
+          "after": 4,
+          "change": 0
+        }
+      ]
+    },
+    {
+      "channel": "bing",
+      "title": "Bing Search",
+      "rows": [
+        {
+          "label": "pest control near me",
+          "before": 9,
+          "after": 6,
+          "change": 3
+        }
+      ]
+    },
+    {
+      "channel": "map_pack",
+      "title": "Google Map Pack",
+      "rows": [
+        {
+          "label": "pest control",
+          "before": null,
+          "after": 3,
+          "change": null
+        },
+        {
+          "label": "termite treatment",
+          "before": 5,
+          "after": 4,
+          "change": 1
+        }
+      ]
+    },
+    {
+      "channel": "ai",
+      "title": "AI Answers",
+      "rows": [
+        {
+          "label": "Who is the best pest control company near me?",
+          "engine": "ChatGPT",
+          "before": false,
+          "after": true
+        },
+        {
+          "label": "Who is the best pest control company near me?",
+          "engine": "Perplexity",
+          "before": false,
+          "after": false
+        }
+      ]
+    }
+  ],
+  "work": [
+    {
+      "category": "new_page",
+      "title": "New pages",
+      "entries": [
+        {
+          "summary": "Built a dedicated termite inspection page targeting your service area.",
+          "url": "https://example.com/termite-inspection",
+          "date": "Nov 6",
+          "scheduled": false
+        }
+      ]
+    },
+    {
+      "category": "blog_post",
+      "title": "Blog posts",
+      "entries": [
+        {
+          "summary": "Published \"How to Spot Termite Damage Before It Spreads\".",
+          "url": "https://example.com/blog/spot-termite-damage",
+          "date": "Nov 7",
+          "scheduled": false
+        },
+        {
+          "summary": "Published \"What Does Pest Control Cost? A Local Homeowner Guide\".",
+          "url": "https://example.com/blog/pest-control-cost",
+          "date": "Nov 9",
+          "scheduled": false
+        }
+      ]
+    },
+    {
+      "category": "gbp_post",
+      "title": "Google Business Profile posts",
+      "entries": [
+        {
+          "summary": "Scheduled a seasonal Google Business Profile post on winter pest prevention.",
+          "url": null,
+          "date": "Nov 24",
+          "scheduled": true
+        }
+      ]
+    },
+    {
+      "category": "alt_text",
+      "title": "Image alt text",
+      "entries": [
+        {
+          "summary": "Added descriptive alt text to 42 images across the service pages.",
+          "url": null,
+          "date": "Nov 6",
+          "scheduled": false
+        }
+      ]
+    },
+    {
+      "category": "internal_link",
+      "title": "Internal linking",
+      "entries": [
+        {
+          "summary": "Added internal links connecting new blog posts to the matching service pages.",
+          "url": null,
+          "date": "Nov 9",
+          "scheduled": false
+        }
+      ]
+    },
+    {
+      "category": "schema",
+      "title": "Structured data",
+      "entries": [
+        {
+          "summary": "Added local business and FAQ structured data so search engines and AI assistants can read your services.",
+          "url": null,
+          "date": "Nov 7",
+          "scheduled": false
+        }
+      ]
+    }
+  ],
+  "sample": true
+}
